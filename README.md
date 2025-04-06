@@ -10,4 +10,4 @@ Ele é um simulador de destruição com física realista, ele é feito para pass
 
 ![image](https://github.com/user-attachments/assets/b41d04b5-73b3-4c9c-9d23-816bccb8159a)
 
-Link do jogo: 
+Link do jogo: https://luirafa2020.github.io/Destrua-a-cidade-com-bombas/
