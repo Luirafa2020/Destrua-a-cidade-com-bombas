@@ -358,28 +358,102 @@ function setupExplosionEffects() { // Add userData to store scaled sizes
 
 // === NEW: Pedestrian Functions ===
 function createPedestrianMesh() {
-    // Simple capsule: cylinder + two half spheres
+    // Simplified Humanoid Shape using Primitives
     const group = new THREE.Group();
-    const mat = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(Math.random() * 0.5 + 0.2, Math.random() * 0.5 + 0.2, Math.random() * 0.5 + 0.2), // Random muted color
-        roughness: 0.8,
-        metalness: 0.1
+
+    // Define dimensions relative to overall height/radius for easier scaling
+    const headRadius = pedestrianRadius * 1.1;
+    const torsoHeight = pedestrianHeight * 0.45;
+    const torsoWidth = pedestrianRadius * 2.2;
+    const torsoDepth = pedestrianRadius * 1.5;
+    const limbRadius = pedestrianRadius * 0.5;
+    const armLength = torsoHeight * 0.9;
+    const legHeight = pedestrianHeight * 0.45;
+
+    // Materials
+    const skinMat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color().setHSL(0.08, 0.5, 0.6 + Math.random() * 0.1), // Basic skin tone range
+        roughness: 0.85,
+        metalness: 0.0
     });
-    const bodyHeight = pedestrianHeight - 2 * pedestrianRadius;
-    const bodyGeom = new THREE.CylinderGeometry(pedestrianRadius, pedestrianRadius, bodyHeight, 8);
-    const bodyMesh = new THREE.Mesh(bodyGeom, mat);
-    bodyMesh.position.y = pedestrianRadius; // Center body part
-    bodyMesh.castShadow = true;
-    group.add(bodyMesh);
+    const clothesMat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color().setHSL(Math.random(), 0.4 + Math.random() * 0.3, 0.3 + Math.random() * 0.3), // Random clothes color
+        roughness: 0.8,
+        metalness: 0.05
+    });
+     const pantsMat = new THREE.MeshStandardMaterial({
+        color: new THREE.Color().setHSL(0.6 + Math.random()*0.1, 0.3 + Math.random() * 0.2, 0.25 + Math.random() * 0.15), // Darker pants color (blues/grays)
+        roughness: 0.8,
+        metalness: 0.05
+    });
 
-    const sphereGeom = new THREE.SphereGeometry(pedestrianRadius, 8, 6); // Simpler sphere
-    const topMesh = new THREE.Mesh(sphereGeom, mat);
-    topMesh.position.y = bodyHeight / 2 + pedestrianRadius;
-    topMesh.castShadow = true;
-    group.add(topMesh);
+    // Head (Sphere)
+    const headGeom = new THREE.SphereGeometry(headRadius, 10, 8);
+    const headMesh = new THREE.Mesh(headGeom, skinMat);
+    headMesh.position.y = legHeight + torsoHeight + headRadius * 0.9; // Position head on top of torso
+    headMesh.castShadow = true;
+    group.add(headMesh);
 
-    // No bottom sphere needed as it's on the ground
-    group.position.y = pedestrianHeight / 2; // Adjust group pivot
+    // Torso (Box)
+    const torsoGeom = new THREE.BoxGeometry(torsoWidth, torsoHeight, torsoDepth);
+    const torsoMesh = new THREE.Mesh(torsoGeom, clothesMat);
+    const torsoYPos = legHeight + torsoHeight / 2;
+    torsoMesh.position.y = torsoYPos; // Position torso above legs
+    torsoMesh.castShadow = true;
+    group.add(torsoMesh);
+
+    // --- Legs (Cylinders within Pivot Groups) ---
+    const legGeom = new THREE.CylinderGeometry(limbRadius, limbRadius * 0.8, legHeight, 6); // Taper slightly
+
+    // Left Leg
+    const leftLegPivot = new THREE.Group();
+    leftLegPivot.name = 'leftLeg'; // Name the pivot group directly
+    leftLegPivot.position.set(-torsoWidth / 3.5, legHeight, 0); // Position pivot at hip height
+    const leftLegMesh = new THREE.Mesh(legGeom, pantsMat);
+    leftLegMesh.position.y = -legHeight / 2; // Offset mesh down so pivot is at the top
+    leftLegMesh.castShadow = true;
+    leftLegPivot.add(leftLegMesh);
+    group.add(leftLegPivot);
+
+    // Right Leg
+    const rightLegPivot = new THREE.Group();
+    rightLegPivot.name = 'rightLeg'; // Name the pivot group directly
+    rightLegPivot.position.set(torsoWidth / 3.5, legHeight, 0); // Position pivot at hip height
+    const rightLegMesh = new THREE.Mesh(legGeom, pantsMat);
+    rightLegMesh.position.y = -legHeight / 2; // Offset mesh down so pivot is at the top
+    rightLegMesh.castShadow = true;
+    rightLegPivot.add(rightLegMesh);
+    group.add(rightLegPivot);
+
+    // --- Arms (Cylinders within Pivot Groups) ---
+    const armGeom = new THREE.CylinderGeometry(limbRadius * 0.8, limbRadius * 0.6, armLength, 6);
+
+    // Left Arm
+    const leftArmPivot = new THREE.Group();
+    leftArmPivot.name = 'leftArm'; // Name the pivot group directly
+    // Position pivot at shoulder height, slightly outside torso
+    leftArmPivot.position.set(-torsoWidth / 2 - limbRadius * 0.5, torsoYPos + torsoHeight / 2 - limbRadius, 0);
+    const leftArmMesh = new THREE.Mesh(armGeom, skinMat); // Use skin material for arms
+    leftArmMesh.position.y = -armLength / 2 + limbRadius; // Offset mesh down so pivot is near the top
+    leftArmMesh.castShadow = true;
+    leftArmPivot.add(leftArmMesh);
+    group.add(leftArmPivot);
+
+    // Right Arm
+    const rightArmPivot = new THREE.Group();
+    rightArmPivot.name = 'rightArm'; // Name the pivot group directly
+    // Position pivot at shoulder height, slightly outside torso
+    rightArmPivot.position.set(torsoWidth / 2 + limbRadius * 0.5, torsoYPos + torsoHeight / 2 - limbRadius, 0);
+    const rightArmMesh = new THREE.Mesh(armGeom, skinMat); // Use skin material for arms
+    rightArmMesh.position.y = -armLength / 2 + limbRadius; // Offset mesh down so pivot is near the top
+    rightArmMesh.castShadow = true;
+    rightArmPivot.add(rightArmMesh);
+    group.add(rightArmPivot);
+
+
+    // Set pivot point to the base (bottom of the feet)
+    // The group's origin is already at 0,0,0 which corresponds to the ground level
+    // because all parts are positioned relative to that (e.g., legs start at y=0 up to legHeight/2).
 
     return group;
 }
@@ -434,11 +508,15 @@ function spawnPedestrians(count) {
 function animatePedestrians(deltaTime) {
     const halfCity = citySize / 2;
     const boundary = halfCity * 1.05; // Slightly outside visual range
+    const walkCycleFrequency = pedestrianSpeed * 5; // Adjust frequency based on speed
+    const walkAmplitude = Math.PI / 4.5; // Swing angle for limbs
+    const time = clock.elapsedTime;
 
     for (const p of pedestrians) {
+        // --- Movement ---
         p.mesh.position.addScaledVector(p.velocity, deltaTime);
 
-        // Basic boundary check and direction change
+        // --- Boundary Check & Direction Change ---
         let changeDir = false;
         if (Math.abs(p.mesh.position.x) > boundary || Math.abs(p.mesh.position.z) > boundary) {
             // Simple teleport back inside if too far out (prevents getting stuck)
@@ -457,8 +535,38 @@ function animatePedestrians(deltaTime) {
              p.velocity.set(Math.cos(angle), 0, Math.sin(angle)).multiplyScalar(pedestrianSpeed * (0.8 + Math.random() * 0.4));
         }
 
-        // Make pedestrian face movement direction (optional)
-        // p.mesh.lookAt(p.mesh.position.x + p.velocity.x, pedestrianHeight / 2, p.mesh.position.z + p.velocity.z);
+        // --- Limb Animation ---
+        const cycleTime = time * walkCycleFrequency;
+
+        // Find limb pivot groups by name
+        const leftLeg = p.mesh.getObjectByName('leftLeg');
+        const rightLeg = p.mesh.getObjectByName('rightLeg');
+        const leftArm = p.mesh.getObjectByName('leftArm');
+        const rightArm = p.mesh.getObjectByName('rightArm');
+
+        if (leftLeg) {
+            leftLeg.rotation.x = walkAmplitude * Math.sin(cycleTime);
+        }
+        if (rightLeg) {
+            rightLeg.rotation.x = walkAmplitude * Math.sin(cycleTime + Math.PI); // Opposite phase
+        }
+        if (leftArm) {
+            leftArm.rotation.x = walkAmplitude * Math.sin(cycleTime + Math.PI); // Opposite phase to left leg
+        }
+        if (rightArm) {
+            rightArm.rotation.x = walkAmplitude * Math.sin(cycleTime); // Opposite phase to right leg
+        }
+
+
+        // Make pedestrian face movement direction
+        // Calculate the target point slightly ahead in the direction of velocity
+        const lookTarget = p.mesh.position.clone().add(p.velocity);
+        // Ensure the target point's Y coordinate is the same as the mesh's Y to prevent tilting
+        lookTarget.y = p.mesh.position.y;
+        // Only apply lookAt if velocity is significant to avoid issues with zero vector
+        if (p.velocity.lengthSq() > 0.001) {
+             p.mesh.lookAt(lookTarget);
+        }
     }
 }
 
