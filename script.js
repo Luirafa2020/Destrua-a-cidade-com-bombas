@@ -32,9 +32,9 @@ let isTargetSet = false;
 // Parâmetros da Explosão e Efeitos (BASE VALUES)
 const citySize = 100;
 const buildingMaxHeight = 15;
-const buildingSpacing = 2.5;
+const buildingSpacing = 2.8;
 const roadWidth = 1.5;
-const fragmentCount = 12;
+const fragmentCount = 13;
 const gravity = 9.8;
 const baseBlastRadius = 30; // Raio base
 const baseBlastForce = 70;  // Força base
