@@ -10,6 +10,10 @@ Ele é um simulador de destruição com física realista, ele é feito para pass
 
 ![image](https://github.com/user-attachments/assets/b41d04b5-73b3-4c9c-9d23-816bccb8159a)
 
+**Update 1:**
+
+![image](https://github.com/user-attachments/assets/b3ef20ad-a11f-45f2-95fc-b6b56c9dfb0e)
+
 Link do jogo: https://luirafa2020.github.io/Destrua-a-cidade-com-bombas/
 
 ---------Feito com a ajuda do Gemini 2.5 Pro---------
