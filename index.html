@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cidade 3D - Ataque Nuclear Simulado</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- UI Sobreposta -->
+    <div id="ui-overlay">
+        <div id="instructions">
+            Simulador Avançado de Destruição<br/>
+            <b>Clique</b> no chão para definir o alvo.<br/>
+            Use o botão abaixo. Navegue com o mouse.
+        </div>
+        <div id="bomb-controls">
+             <!-- Timer Display removido - não há mais contagem regressiva visível -->
+            <div id="status-display">Status: Defina o Alvo</div>
+            <div class="controls">
+                 <button id="launch-button" disabled>LANÇAR ATAQUE</button>
+                 <!-- Botão Desarmar removido - a bomba não fica "armada" esperando -->
+            </div>
+            <div id="performance-info">Partículas: N/A</div> <!-- Info de performance -->
+        </div>
+         <div id="explosion-overlay"></div> <!-- Para o flash -->
+    </div>
+
+    <canvas id="city-canvas"></canvas>
+
+        <!-- Three.js e OrbitControls via CDN -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    
+        <!-- Nosso Script -->
+        <script src="script.js"></script>
+</body>
+</html>

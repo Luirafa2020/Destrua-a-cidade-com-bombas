@@ -1,0 +1,168 @@
+body {
+    margin: 0;
+    overflow: hidden; /* Remove barras de rolagem */
+    background-color: #222; /* Fundo escuro */
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+#city-canvas {
+    display: block; /* Remove espaço extra abaixo do canvas */
+    width: 100vw;
+    height: 100vh;
+    cursor: crosshair; /* Indica que se pode clicar para posicionar */
+}
+
+#ui-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box; /* Inclui padding na largura */
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 1; /* Garante que fique sobre o canvas */
+    pointer-events: none; /* Permite cliques através da UI principal */
+}
+
+#instructions {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 13px;
+    max-width: 300px;
+}
+
+#bomb-controls {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    width: 280px;
+    pointer-events: auto; /* Habilita cliques nos controles */
+    font-size: 14px;
+}
+
+#timer-display {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #ff4d4d; /* Vermelho para o timer */
+    text-align: center;
+    margin-bottom: 10px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+#status-display {
+    font-size: 1em;
+    color: #00ff00; /* Verde para status OK */
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-around; /* Espaçar botões */
+    align-items: center;
+    gap: 10px;
+}
+
+/* Estilos dos botões e input (removido input de tempo por simplicidade) */
+.controls button {
+    padding: 8px 12px;
+    font-size: 0.9em;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    background-color: #4CAF50; /* Verde */
+    color: white;
+    transition: background-color 0.3s ease;
+    flex-grow: 1; /* Faz botões ocuparem espaço */
+}
+
+.controls button:disabled {
+    background-color: #777;
+    cursor: not-allowed;
+    color: #bbb;
+}
+
+.controls button#arm-button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+.controls button#disarm-button {
+    background-color: #f44336; /* Vermelho */
+}
+
+.controls button#disarm-button:hover:not(:disabled) {
+    background-color: #da190b;
+}
+
+/* Overlay para efeito de explosão (flash) */
+#explosion-overlay {
+    position: fixed; /* Fixo na tela inteira */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    opacity: 0;
+    pointer-events: none; /* Não interfere com cliques */
+    transition: opacity 0.1s ease-out;
+    z-index: 10; /* Acima de tudo */
+}
+
+#explosion-overlay.active {
+    opacity: 0.9; /* Quase opaco */
+}
+
+/* Estilo para timer piscando (adicionado via JS) */
+.timer-blink {
+    animation: blink 0.5s infinite alternate;
+}
+
+@keyframes blink {
+    from { opacity: 1; }
+    to { opacity: 0.4; }
+}
+
+#bomb-controls {
+    /* Remover timer-display se existir */
+    /* Ajustar layout se necessário sem o timer */
+    text-align: center; /* Centraliza status e botão */
+}
+
+#status-display {
+     margin-bottom: 15px; /* Mais espaço abaixo do status */
+     font-size: 1.1em;
+}
+
+.controls {
+    justify-content: center; /* Centraliza o botão único */
+}
+
+.controls button#launch-button {
+    background-color: #d9534f; /* Vermelho para Lançar */
+    font-weight: bold;
+    padding: 10px 20px;
+    flex-grow: 0; /* Não estica o botão */
+}
+.controls button#launch-button:hover:not(:disabled) {
+    background-color: #c9302c;
+}
+
+#performance-info {
+    margin-top: 15px;
+    font-size: 0.8em;
+    color: #aaa;
+    text-align: center;
+}
+
+/* Cursor para indicar alvo */
+#city-canvas.targeting {
+    cursor: crosshair;
+}
+#city-canvas.busy {
+    cursor: wait; /* Indica que algo está acontecendo */
+}
